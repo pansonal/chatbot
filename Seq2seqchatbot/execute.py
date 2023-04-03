@@ -22,7 +22,12 @@ def preprocess_sentence(w):
     return w
 
 def create_dataset(path, num_examples):
-    path = 'E:\\课程\\NLP\\chatbot\\Seq2seqchatbot'+ '\\' + path
+    if __name__ == '__main__':
+        path = f'./{path}'
+    else:
+        path = f'../{path}'
+    # path = 'E:\\研\\NLP\\chatbot-master\\chatbot-master\\Chatbot_pytorch\\Seq2seqchatbot'+ '\\' + path
+    print(path)
     lines = io.open(path, encoding='UTF-8').read().strip().split('\n')
     pairs = [[preprocess_sentence(w)for w in l.split('\t')] for l in lines[:num_examples]]
     # input_lang=Lang("ans")
@@ -103,7 +108,7 @@ def train():
         decoder.load_state_dict(checkpoint['modelB_state_dict'])
     max_data=gConfig['max_train_data_size']
     total_loss = 0
-    batch_loss=1.6
+    batch_loss=1
     while batch_loss>gConfig['min_loss']:
         start_time_epoch = time.time()
         for i in range(1,(max_data//BATCH_SIZE)):
@@ -127,7 +132,11 @@ def predict(sentence):
     decoder = seq2seqModel.AttentionDencoder(hidden_size, target_lang.n_words, dropout_p=0.1).to(device)
     checkpoint_dir = gConfig['model_data']
     # checkpoint_prefix = os.path.join(checkpoint_dir, ".pt")
-    checkpoint_prefix = 'E:\\课程\\NLP\\chatbot\\Seq2seqchatbot'+ '\\' +"model_data.pt"
+    if __name__ == '__main__':
+        checkpoint_prefix = './model_data.pt'
+    else:
+        checkpoint_prefix = '../model_data.pt'
+    # checkpoint_prefix = 'E:\\研\\NLP\\chatbot-master\\chatbot-master\\Chatbot_pytorch\\Seq2seqchatbot'+ '\\' +"model_data.pt"
     checkpoint=torch.load(checkpoint_prefix)
     encoder.load_state_dict(checkpoint['modelA_state_dict'])
     decoder.load_state_dict(checkpoint['modelB_state_dict'])
